@@ -1,118 +1,101 @@
-import { useState, useEffect, type FC } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, type FC } from "react";
+import { ArrowRight, Menu, X } from "lucide-react";
 
 interface NavbarProps {
   onOpenDemo: () => void;
 }
 
 export const Navbar: FC<NavbarProps> = ({ onOpenDemo }) => {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const navLinks = [
+    { name: "cara kerja", href: "#cara-kerja" },
     { name: "fitur", href: "#fitur" },
     { name: "simulasi", href: "#simulasi" },
-    { name: "alur-kerja", href: "#alur-kerja" },
     { name: "telegram", href: "#telegram-bot" },
-    { name: "roi", href: "#roi" },
+    { name: "alur-kerja", href: "#alur-kerja" },
+    { name: "kalkulator roi", href: "#roi" },
     { name: "arsitektur", href: "#arsitektur" },
     { name: "faq", href: "#faq" },
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-[var(--bg)] ${
-        scrolled ? "bg-[var(--bg)]" : "bg-[var(--bg)]"
-      }`}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#161615]/95 backdrop-blur-md border-b border-[#3D3C39] py-3.5 transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo — teks piksel + aksen */}
-          <a href="#" className="flex items-center gap-2">
-            <span aria-hidden className="text-[20px] leading-none text-[var(--accent)]">
-              *
-            </span>
-            <span className="text-[14px] font-bold text-[var(--text)]">
-              autoreplenish.ai
-            </span>
+        <div className="flex items-center justify-between h-12">
+          {/* Brand Logo - Logo image + Monospace font */}
+          <a href="#" className="flex items-center gap-2.5 group">
+            <img
+              src="/logo.png"
+              alt="AUTO REPLENISH.AI Logo"
+              className="h-8 w-8 object-contain rounded-[4px] p-0.5 bg-[#1F1E1D] border border-[#3D3C39]"
+            />
+            <div className="flex items-baseline gap-1.5 font-mono">
+              <span className="text-[14px] font-bold text-[#FAF9F5] tracking-wider">
+                AUTOREPLENISH.AI
+              </span>
+            </div>
           </a>
 
-          {/* Navigasi tengah */}
-          <nav className="hidden lg:flex items-center gap-8">
+          {/* Desktop Navigation Links - Monospace & Minimal */}
+          <nav className="hidden lg:flex items-center gap-6 text-[13px] font-mono">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-[14px] text-[var(--text)] hover:text-[var(--text-muted)] no-underline"
+                className="text-[#A3A199] hover:text-[#FAF9F5] transition-colors"
               >
                 {link.name}
               </a>
             ))}
           </nav>
 
-          {/* Aksi kanan */}
-          <div className="hidden sm:flex items-center gap-3">
-            <span className="hidden xl:inline-flex items-center gap-2 rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-1 text-[12px] text-[var(--text-muted)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-              <span>bedrock + sap: connected</span>
-            </span>
-
+          {/* Action CTA - "minta demo" only (demo 3d twin button removed) */}
+          <div className="hidden sm:flex items-center gap-2 font-mono">
             <button
               onClick={onOpenDemo}
-              className="inline-flex items-center justify-center px-4 py-2.5 text-[14px] font-medium text-[var(--btn-light-text)] bg-[var(--btn-light-bg)] rounded-[var(--radius-md)] hover:opacity-90 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[12px] font-[500] text-[#161615] bg-[#F0EEEA] hover:bg-white rounded-[8px] cursor-pointer transition-colors active:scale-95 shadow-none"
             >
-              minta demo
+              <span>minta demo</span>
+              <ArrowRight className="h-3 w-3" />
             </button>
           </div>
 
-          {/* Mobile */}
-          <div className="flex sm:hidden items-center gap-2">
-            <button
-              onClick={onOpenDemo}
-              className="px-3 py-1.5 text-[13px] font-medium text-[var(--btn-light-text)] bg-[var(--btn-light-bg)] rounded-[var(--radius-sm)] cursor-pointer"
-            >
-              demo
-            </button>
+          {/* Mobile Menu Toggle */}
+          <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-[var(--text-muted)] rounded-[var(--radius-sm)] bg-[var(--surface)] border border-[var(--border)] cursor-pointer"
+              className="p-2 text-[#A3A199] hover:text-[#FAF9F5] rounded-[6px] bg-[#1F1E1D] border border-[#3D3C39]"
               aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4 text-[#FAF9F5]" />}
             </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="sm:hidden bg-[var(--bg)] border-t border-[var(--border)] px-4 pt-3 pb-6 space-y-1">
+        <div className="lg:hidden bg-[#161615] border-b border-[#3D3C39] px-4 pt-3 pb-6 mt-2 space-y-2 backdrop-blur-xl font-mono text-[13px]">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-2 py-2 text-[14px] text-[var(--text)] no-underline hover:bg-[var(--surface-hover)] rounded-[var(--radius-sm)]"
+              className="block px-3 py-2 text-[#A3A199] hover:text-[#FAF9F5] hover:bg-[#1F1E1D] rounded-[6px]"
             >
               {link.name}
             </a>
           ))}
-          <div className="pt-3 border-t border-[var(--border)]">
+          <div className="pt-3 border-t border-[#3D3C39]">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenDemo();
               }}
-              className="w-full py-2.5 text-center text-[14px] font-medium text-[var(--btn-light-text)] bg-[var(--btn-light-bg)] rounded-[var(--radius-md)] cursor-pointer"
+              className="w-full py-2.5 text-center text-[13px] font-[500] text-[#161615] bg-[#F0EEEA] rounded-[8px]"
             >
-              jadwalkan demo
+              minta live demo
             </button>
           </div>
         </div>

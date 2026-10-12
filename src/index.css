@@ -19,6 +19,7 @@
   /* Tipografi */
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo,
     Consolas, "Liberation Mono", monospace;
+  --font-pixel: "Silkscreen", "IBM Plex Mono", monospace;
 
   /* Radius */
   --radius-sm: 4px;
@@ -37,9 +38,9 @@
 
   html,
   body {
-    background: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
-    font: 400 14px/1.7 var(--font-mono);
+    font-family: var(--font-mono);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -48,39 +49,15 @@
     padding: 0;
     overflow-x: hidden;
   }
-
-  h1 {
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-
-  h2,
-  h3 {
-    color: var(--text);
-  }
-
-  a {
-    color: var(--link);
-    text-underline-offset: 3px;
-  }
-
-  ::selection {
-    background: var(--surface-active);
-    color: var(--text);
-  }
-
-  :focus-visible {
-    outline: 1px solid var(--accent);
-    outline-offset: 2px;
-  }
 }
 
-/* Scrollbar — datar, tanpa aksen neon */
+.font-pixel {
+  font-family: var(--font-pixel);
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg);
@@ -90,94 +67,62 @@
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-faint);
+  background: var(--accent);
 }
 
-/* Helper tipografi sesuai skala design.md */
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--text);
-}
-
-.body-muted {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-
-.caption {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--text-faint);
-}
-
-.marker {
-  color: var(--text-faint);
-}
-
-/* Input besar — design.md 5.2 */
-.input-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  color: var(--text);
-  font: 400 14px/1.6 var(--font-mono);
-}
-.input-box::placeholder {
-  color: var(--text-muted);
-}
-.input-box:focus-within {
-  border-color: var(--accent);
-}
-
-/* Chip aksi — design.md 5.4 */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--surface-hover);
-  color: var(--text);
-  border: 0;
-  border-radius: var(--radius-md);
-  font: 500 13px var(--font-mono);
-  transition: background-color 150ms ease-out;
-}
-.chip:hover {
-  background: var(--surface-active);
-}
-
-/* Transisi global: hanya warna / opacity / border */
-a,
-button,
-input,
-select,
-textarea {
-  transition:
-    background-color 150ms ease-out,
-    border-color 150ms ease-out,
-    color 150ms ease-out,
-    opacity 150ms ease-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+/* Liquid Wave Animations */
+@keyframes liquidWave {
+  0% {
+    transform: translateX(0) translateZ(0) scaleY(1);
   }
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
+  50% {
+    transform: translateX(-25%) translateZ(0) scaleY(1.08);
+  }
+  100% {
+    transform: translateX(-50%) translateZ(0) scaleY(1);
   }
 }
 
-/* Range input — datar */
-input[type="range"] {
-  accent-color: var(--accent);
+@keyframes liquidPulse {
+  0%, 100% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 15px rgba(217, 119, 87, 0.35));
+  }
+  50% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 30px rgba(217, 119, 87, 0.7));
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-liquid-wave {
+  animation: liquidWave 8s infinite linear;
+}
+
+.animate-liquid-wave-fast {
+  animation: liquidWave 4.5s infinite linear;
+}
+
+.animate-liquid-pulse {
+  animation: liquidPulse 3.5s infinite ease-in-out;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 4s infinite ease-in-out;
+}
+
+/* Warm Clay & Charcoal Ambient Mesh */
+.glow-clay-mesh {
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(217, 119, 87, 0.12) 0%, transparent 55%),
+    radial-gradient(circle at 10% 30%, rgba(229, 138, 107, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 90% 50%, rgba(122, 169, 238, 0.06) 0%, transparent 50%);
 }
