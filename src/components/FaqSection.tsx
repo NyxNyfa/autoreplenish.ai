@@ -10,39 +10,39 @@ interface FaqItem {
 const faqs: FaqItem[] = [
   {
     category: "sap",
-    question: "apakah autoreplenish menggantikan sistem SAP?",
+    question: "Apakah AutoReplenish.ai menggantikan sistem SAP yang sudah ada?",
     answer:
-      "tidak. SAP S/4HANA atau ECC tetap sebagai Single System of Record. AutoReplenish bertindak sebagai reasoning agent di layer edge yang menghitung kebutuhan stok harian dan menerbitkan Purchase Requisition (BAPI/OData) resmi hanya setelah disetujui kepala toko.",
+      "Tidak. SAP S/4HANA atau SAP ECC tetap menjadi Single System of Record perusahaan Anda. AutoReplenish.ai bekerja sebagai lapisan kecerdasan otonom (Reasoning Layer) yang menghitung kebutuhan stok harian secara presisi dan menerbitkan Purchase Requisition (BAPI/OData) resmi setelah disetujui Kepala Toko.",
   },
   {
     category: "operasional",
-    question: "bagaimana jika kepala toko sedang sibuk dan tidak membalas Telegram?",
+    question: "Bagaimana jika Kepala Toko sedang sibuk dan belum membalas Telegram?",
     answer:
-      "sistem akan mengirimkan 1 pengingat lembut 1 jam sebelum batas waktu (timeout window 4 jam). Apabila tetap tidak direspon hingga batas pengiriman truk DC, status otomatis 'TIMEOUT_ESCALATED' tanpa menerbitkan PR palsu. Daftar order yang terlewat akan muncul di monitoring dashboard tim Supply Chain pusat.",
+      "Sistem mengirimkan 1 pengingat otomatis sebelum batas waktu (timeout window 4 jam). Apabila tetap tidak direspons hingga jadwal keberangkatan truk DC, status ditandai 'TIMEOUT_ESCALATED' di dashboard tim Supply Chain pusat tanpa menerbitkan pesanan fiktif.",
   },
   {
     category: "keamanan",
-    question: "apakah data penjualan dan inventaris minimarket aman di AI?",
+    question: "Apakah data penjualan dan inventaris minimarket kami aman?",
     answer:
-      "sangat aman. Arsitektur berjalan di atas AWS Bedrock privat dengan isolasi VPC penuh. Kebijakan AWS & Anthropic menjamin bahwa data transaksi pelanggan TIDAK PERNAH digunakan untuk melatih (retrain) model AI publik. Kredensial ERP disimpan terenkripsi di AWS Secrets Manager.",
+      "Sangat aman. Seluruh arsitektur berjalan di atas VPC privat AWS Bedrock (Region Jakarta). Data transaksi pelanggan dijamin tidak pernah digunakan untuk melatih model AI publik, dan kredensial ERP disimpan terenkripsi dengan AWS Secrets Manager.",
   },
   {
     category: "operasional",
-    question: "mengapa menggunakan Telegram, bukan membuat aplikasi mobile baru?",
+    question: "Mengapa menggunakan Telegram dibanding membuat aplikasi mobile baru?",
     answer:
-      "aplikasi baru membutuhkan onboarding, login berulang, izin MDM, dan sering diabaikan karyawan toko. Telegram sudah terpasang di hampir setiap smartphone kepala minimarket Indonesia, memiliki latensi sub-detik, sangat hemat kuota, dan keputusan bisa selesai dalam hitungan 10 detik tanpa hambatan teknis.",
+      "Aplikasi baru membutuhkan instalasi, pelatihan ulang, dan membebani memori HP karyawan toko. Telegram sudah familier, sangat ringan, memiliki latensi sub-detik, dan memungkinkan Kepala Toko menyelesaikan persetujuan stok hanya dalam 10 detik.",
   },
   {
     category: "operasional",
-    question: "apakah kepala toko bisa mengubah jumlah pesanan atau menolak?",
+    question: "Apakah Kepala Toko bisa mengubah jumlah pesanan atau menolak rekomendasi AI?",
     answer:
-      "bisa, kontrol mutlak tetap di tangan manusia. Kepala toko dapat mengetuk 'Ubah Jumlah' jika ada kondisi fisik rak yang berbeda (misal: rak promo baru dipasang), atau 'Tolak' dengan memilih alasan singkat. Setiap perubahan dicatat di DynamoDB sebagai umpan balik untuk kalibrasi AI berikutnya.",
+      "Bisa, kendali penuh tetap di tangan Kepala Toko. Mereka dapat menekan 'Ubah Jumlah' jika kondisi fisik rak membutuhkan penyesuaian, atau 'Tolak' disertai alasan singkat. Seluruh interaksi terekam otomatis di DynamoDB sebagai jejak audit.",
   },
   {
     category: "sap",
-    question: "berapa lama waktu yang dibutuhkan untuk memulai pilot POC?",
+    question: "Berapa lama waktu yang dibutuhkan untuk memulai program Pilot POC?",
     answer:
-      "untuk kluster 10–25 toko pilot, setup sandbox biasanya selesai dalam 2–3 minggu. Tim kami hanya membutuhkan koneksi OData read/write sandbox SAP Anda serta daftar chat_id Telegram kepala toko peserta pilot.",
+      "Untuk kluster 10–25 gerai pilot, integrasi sandbox SAP dan konfigurasi bot Telegram selesai dalam 14 hari kerja tanpa mengganggu operasional kasir.",
   },
 ];
 
@@ -64,31 +64,31 @@ export const FaqSection: FC = () => {
         <div className="text-center max-w-[640px] mx-auto mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--surface)] border border-[var(--border)] text-[12px] text-[var(--text-muted)] mb-3">
             <HelpCircle className="h-3.5 w-3.5 text-[var(--accent)]" />
-            <span>tanya jawab integrasi & operasional</span>
+            <span>TANYA JAWAB INTEGRASI & OPERASIONAL</span>
           </div>
-          <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-            pertanyaan yang sering diajukan
+          <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+            Pertanyaan yang Sering Diajukan
           </h2>
           <p className="mt-2 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-            jawaban lugas seputar implementasi ritel. detail teknis arsitektur dapat dibahas saat sesi demo live.
+            Jawaban lugas seputar implementasi ritel, keamanan data ERP, dan operasional harian di toko.
           </p>
 
           {/* Category Filter Chips */}
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {(
               [
-                { id: "semua", label: "semua (6)" },
-                { id: "operasional", label: "operasional toko" },
-                { id: "sap", label: "integrasi sap erp" },
-                { id: "keamanan", label: "keamanan & data" },
+                { id: "semua", label: "Semua Topik (6)" },
+                { id: "operasional", label: "Operasional Toko" },
+                { id: "sap", label: "Integrasi SAP ERP" },
+                { id: "keamanan", label: "Keamanan & Privasi" },
               ] as const
             ).map((c) => (
               <button
                 key={c.id}
                 onClick={() => setFilter(c.id)}
-                className={`px-3 py-1 rounded-[var(--radius-sm)] text-[12px] font-mono cursor-pointer transition-colors ${
+                className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-mono cursor-pointer transition-colors ${
                   filter === c.id
-                    ? "bg-[var(--accent)] text-[#161615] font-semibold"
+                    ? "bg-[var(--accent)] text-[#161615] font-bold"
                     : "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)]"
                 }`}
               >

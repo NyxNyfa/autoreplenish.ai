@@ -47,7 +47,7 @@ export const Scroll3DCard = ({
   return (
     <div
       ref={ref}
-      className={cn("w-full relative py-6", containerClassName)}
+      className={cn("w-full relative py-2", containerClassName)}
       style={{ perspective: "1200px" }}
     >
       <motion.div
@@ -58,14 +58,8 @@ export const Scroll3DCard = ({
           translateY,
           transformStyle: "preserve-3d",
         }}
-        whileHover={{
-          y: -4,
-          transition: { duration: 0.2 },
-        }}
         className={cn(
-          "relative w-full rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8 backdrop-blur-xl transition-all duration-300",
-          "hover:border-[var(--accent)] hover:shadow-[0_0_40px_-10px_rgba(217,119,87,0.22)]",
-          "shadow-[0_15px_35px_-10px_rgba(0,0,0,0.5)]",
+          "relative w-full transition-all duration-300",
           className
         )}
       >

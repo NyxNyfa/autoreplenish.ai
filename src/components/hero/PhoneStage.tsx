@@ -11,14 +11,16 @@ interface PhoneStageProps {
   pinToRightViewport?: boolean;
   phaseIndex: number;
   phaseProgress: number;
+  onTriggerApprove?: () => void;
 }
 
 export const PhoneStage: FC<PhoneStageProps> = ({
   position,
-  scale = 1.98,
+  scale = 1.92,
   pinToRightViewport = true,
   phaseIndex,
   phaseProgress,
+  onTriggerApprove,
 }) => {
   const phoneGroupRef = useRef<Group>(null);
   const screenMeshRef = useRef<Mesh>(null);
@@ -46,10 +48,12 @@ export const PhoneStage: FC<PhoneStageProps> = ({
   const phoneDepth = 0.85;
 
   // Orient phone to directly face the camera and pin to right-most 20% of viewport
-  useFrame(() => {
+  useFrame((state) => {
     canvasManager.update(phaseIndex, phaseProgress);
 
     if (!phoneGroupRef.current || !camera) return;
+
+    const floatY = Math.sin(state.clock.getElapsedTime() * 1.4) * 0.35;
 
     phoneGroupRef.current.quaternion.copy(camera.quaternion);
     phoneGroupRef.current.rotateY(-0.15);
@@ -60,20 +64,19 @@ export const PhoneStage: FC<PhoneStageProps> = ({
       vUp.set(0, 1, 0).applyQuaternion(camera.quaternion);
       vFwd.set(0, 0, -1).applyQuaternion(camera.quaternion);
 
-      // Pin center of phone to the right-most 20% of the viewport (around 87% width)
-      // and keep a safe margin from the right edge
+      // Pin center of phone consistently to the right column (matching Image 2 framing)
+      const effectiveHalfW = Math.min(viewport.width / 2, 66.0);
       const targetRightOffset = Math.max(
-        viewport.width * 0.36,
-        viewport.width / 2 - (phoneWidth * scale * 0.5 + 3.0)
+        effectiveHalfW * 0.72,
+        effectiveHalfW - (phoneWidth * scale * 0.5 + 3.2)
       );
 
-      // Distance 35 units along camera forward ray places the phone in the foreground,
-      // physically closer to the camera lens than any diorama buildings/roads/trucks (depth 55-85)
+      // Distance 35 units along camera forward ray places the phone in the foreground
       computedPos
         .copy(camera.position)
         .addScaledVector(vFwd, 35)
         .addScaledVector(vRight, targetRightOffset)
-        .addScaledVector(vUp, -3.0);
+        .addScaledVector(vUp, -2.1 + floatY);
 
       phoneGroupRef.current.position.copy(computedPos);
     }
@@ -85,6 +88,10 @@ export const PhoneStage: FC<PhoneStageProps> = ({
       position={position || [22, 0, 0]}
       scale={scale}
       renderOrder={999}
+      onClick={(e) => {
+        e.stopPropagation();
+        onTriggerApprove?.();
+      }}
     >
       {/* Smartphone Chassis — Clean float, NO ground shadow, NO pedestals */}
       <RoundedBox

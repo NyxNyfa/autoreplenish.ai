@@ -306,11 +306,11 @@ export function createRoadRibbonGeometry(
  * Spawn at DC Warehouse dock -> drive along road loop -> park at target Supermarket bay
  */
 export const WAREHOUSE_TO_STORE_SPLINES = {
-  // Truck 1: DC Dock 1 [-6, 0, -24] -> Cabang Sudirman [33.0, 0, 0]
+  // Truck 1: DC Dock 1 [-7.5, 0, -23.5] -> Cabang Sudirman [33.0, 0, 0]
   "TRK-2051": new CatmullRomCurve3(
     [
-      new Vector3(-6, 0, -24),
-      new Vector3(-6, 0, -20),
+      new Vector3(-7.5, 0, -23.5),
+      new Vector3(-7.5, 0, -20),
       new Vector3(12, 0, -20),
       new Vector3(26.5, 0, -16),
       new Vector3(30, 0, -8),
@@ -323,37 +323,134 @@ export const WAREHOUSE_TO_STORE_SPLINES = {
     0.15
   ),
 
-  // Truck 2: DC Dock 2 [0, 0, -24] -> Cabang Kampus [0, 0, 23.0]
-  "TRK-2205": new CatmullRomCurve3(
+  // Truck 2: DC Dock 2 [-2.5, 0, -23.5] -> Cabang Stasiun [14.0, 0, 23.0]
+  "TRK-2409": new CatmullRomCurve3(
     [
-      new Vector3(0, 0, -24),
-      new Vector3(0, 0, -20),
+      new Vector3(-2.5, 0, -23.5),
+      new Vector3(-2.5, 0, -20),
       new Vector3(14, 0, -20),
       new Vector3(26.5, 0, -15),
       new Vector3(30, 0, -6),
       new Vector3(30, 0, 6),
       new Vector3(26.5, 0, 15),
-      new Vector3(14, 0, 20),
-      new Vector3(3, 0, 20.5),
-      new Vector3(0, 0, 21.8),
-      new Vector3(0, 0, 23.0),
+      new Vector3(18, 0, 20),
+      new Vector3(14.0, 0, 21.5),
+      new Vector3(14.0, 0, 23.0),
     ],
     false,
     "catmullrom",
     0.15
   ),
 
-  // Truck 3: DC Dock 3 [6, 0, -24] -> Cabang Perumahan [-33.0, 0, 0]
+  // Truck 3: DC Dock 3 [2.5, 0, -23.5] -> Cabang Kampus [-14.0, 0, 23.0]
+  "TRK-2205": new CatmullRomCurve3(
+    [
+      new Vector3(2.5, 0, -23.5),
+      new Vector3(2.5, 0, -20),
+      new Vector3(-14, 0, -20),
+      new Vector3(-26.5, 0, -15),
+      new Vector3(-30, 0, -6),
+      new Vector3(-30, 0, 6),
+      new Vector3(-26.5, 0, 15),
+      new Vector3(-18, 0, 20),
+      new Vector3(-14.0, 0, 21.5),
+      new Vector3(-14.0, 0, 23.0),
+    ],
+    false,
+    "catmullrom",
+    0.15
+  ),
+
+  // Truck 4: DC Dock 4 [7.5, 0, -23.5] -> Cabang Perumahan [-33.0, 0, 0]
   "TRK-2307": new CatmullRomCurve3(
     [
-      new Vector3(6, 0, -24),
-      new Vector3(6, 0, -20),
+      new Vector3(7.5, 0, -23.5),
+      new Vector3(7.5, 0, -20),
       new Vector3(-12, 0, -20),
       new Vector3(-26.5, 0, -16),
       new Vector3(-30, 0, -8),
       new Vector3(-30, 0, -2),
       new Vector3(-31.5, 0, 0),
       new Vector3(-33.0, 0, 0),
+    ],
+    false,
+    "catmullrom",
+    0.15
+  ),
+};
+
+/**
+ * Return Splines (Store Loading Bay -> Road Loop -> DC Warehouse Dock):
+ * Ensures all 4 trucks return smoothly to their exact DC docks at the end of the cycle
+ * so the loop never jumps or teleports.
+ */
+export const STORE_TO_WAREHOUSE_SPLINES = {
+  // Truck 1 Return: Cabang Sudirman [33.0, 0, 0] -> DC Dock 1 [-7.5, 0, -23.5]
+  "TRK-2051": new CatmullRomCurve3(
+    [
+      new Vector3(33.0, 0, 0),
+      new Vector3(30.0, 0, -3),
+      new Vector3(30.0, 0, -9),
+      new Vector3(26.5, 0, -16),
+      new Vector3(14.0, 0, -20),
+      new Vector3(-4.0, 0, -20),
+      new Vector3(-7.5, 0, -21.8),
+      new Vector3(-7.5, 0, -23.5),
+    ],
+    false,
+    "catmullrom",
+    0.15
+  ),
+
+  // Truck 2 Return: Cabang Stasiun [14.0, 0, 23.0] -> DC Dock 2 [-2.5, 0, -23.5]
+  "TRK-2409": new CatmullRomCurve3(
+    [
+      new Vector3(14.0, 0, 23.0),
+      new Vector3(18.0, 0, 20.0),
+      new Vector3(26.5, 0, 15.0),
+      new Vector3(30.0, 0, 6.0),
+      new Vector3(30.0, 0, -6.0),
+      new Vector3(26.5, 0, -15.0),
+      new Vector3(14.0, 0, -20.0),
+      new Vector3(1.0, 0, -20.0),
+      new Vector3(-2.5, 0, -21.8),
+      new Vector3(-2.5, 0, -23.5),
+    ],
+    false,
+    "catmullrom",
+    0.15
+  ),
+
+  // Truck 3 Return: Cabang Kampus [-14.0, 0, 23.0] -> DC Dock 3 [2.5, 0, -23.5]
+  "TRK-2205": new CatmullRomCurve3(
+    [
+      new Vector3(-14.0, 0, 23.0),
+      new Vector3(-18.0, 0, 20.0),
+      new Vector3(-26.5, 0, 15.0),
+      new Vector3(-30.0, 0, 6.0),
+      new Vector3(-30.0, 0, -6.0),
+      new Vector3(-26.5, 0, -15.0),
+      new Vector3(-14.0, 0, -20.0),
+      new Vector3(-1.0, 0, -20.0),
+      new Vector3(2.5, 0, -21.8),
+      new Vector3(2.5, 0, -23.5),
+    ],
+    false,
+    "catmullrom",
+    0.15
+  ),
+
+  // Truck 4 Return: Cabang Perumahan [-33.0, 0, 0] -> DC Dock 4 [7.5, 0, -23.5]
+  "TRK-2307": new CatmullRomCurve3(
+    [
+      new Vector3(-33.0, 0, 0),
+      new Vector3(-30.0, 0, -3),
+      new Vector3(-30.0, 0, -9),
+      new Vector3(-26.5, 0, -16),
+      new Vector3(-14.0, 0, -20),
+      new Vector3(4.0, 0, -20),
+      new Vector3(7.5, 0, -21.8),
+      new Vector3(7.5, 0, -23.5),
     ],
     false,
     "catmullrom",

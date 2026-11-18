@@ -96,21 +96,21 @@ export const ArchitectureSection: FC = () => {
   const SelectedIcon = selectedNode.icon;
 
   return (
-    <section id="arsitektur" className="py-20 border-b border-[var(--border)] bg-[var(--bg)]">
+    <section id="arsitektur" className="py-20 bg-[#161615]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <Scroll3DCard rotateDeg={8} scaleFrom={0.95}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-12 space-y-10">
             {/* Header */}
-            <div className="max-w-[640px]">
+            <div className="max-w-[680px]">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[12px] text-[var(--text-muted)] mb-3">
                 <Shield className="h-3.5 w-3.5 text-[var(--accent)]" />
-                <span>infrastruktur enterprise aman</span>
+                <span>INFRASTRUKTUR ENTERPRISE AMAN</span>
               </div>
-              <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-                arsitektur empat pilar tanpa black-box
+              <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+                Arsitektur Empat Pilar <span className="text-[var(--accent)]">Tanpa Black-Box</span>
               </h2>
               <p className="mt-2 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-                setiap komponen terhubung dengan protokol standar industri. pilih pilar untuk melihat spesifikasi teknis dan jaminan keamanannya.
+                Setiap komponen terhubung dengan protokol standar industri. Pilih pilar di bawah untuk melihat spesifikasi teknis dan jaminan isolasi datanya.
               </p>
             </div>
 

@@ -35,18 +35,18 @@ export const TelegramSimulator: FC = () => {
               {/* Left Column: design.md theme */}
               <div className="lg:col-span-6 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[12px] text-[var(--text-muted)]">
-                  <span className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
+                  <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
                   <Smartphone className="h-3.5 w-3.5 text-[var(--accent)]" />
-                  <span>human-in-the-loop · telegram native</span>
+                  <span>HUMAN-IN-THE-LOOP · TELEGRAM NATIVE</span>
                 </div>
 
                 <div>
-                  <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-                    kepala toko cukup balas dari telegram
+                  <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+                    Kepala Toko Cukup Balas dari{" "}
+                    <span className="text-[var(--accent)]">Telegram</span>
                   </h2>
                   <p className="mt-3 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-                    tanpa login erp rumit, tanpa aplikasi baru yang harus diinstall di ratusan gerai.
-                    rekomendasi berbasis reasoning ai masuk tepat waktu, keputusan selesai dalam 10 detik.
+                    Tanpa login ERP yang rumit, tanpa aplikasi baru yang harus diinstal di ratusan gerai. Rekomendasi berbasis reasoning AI masuk tepat waktu, keputusan selesai dalam 10 detik.
                   </p>
                 </div>
 
@@ -56,9 +56,9 @@ export const TelegramSimulator: FC = () => {
                       <Check className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-[var(--text)]">zero installation overhead</h4>
+                      <h4 className="text-[14px] font-bold text-[var(--text)]">Zero Installation Overhead</h4>
                       <p className="text-[13px] text-[var(--text-muted)] mt-0.5 leading-[1.6]">
-                        berjalan langsung di telegram yang sudah aktif di hp tiap kepala toko minimarket.
+                        Berjalan langsung di Telegram yang sudah aktif di smartphone setiap Kepala Toko minimarket.
                       </p>
                     </div>
                   </div>
@@ -68,9 +68,9 @@ export const TelegramSimulator: FC = () => {
                       <Pencil className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-[var(--text)]">kontrol penuh di tangan toko</h4>
+                      <h4 className="text-[14px] font-bold text-[var(--text)]">Kontrol Penuh di Tangan Toko</h4>
                       <p className="text-[13px] text-[var(--text-muted)] mt-0.5 leading-[1.6]">
-                        setujui 1-klik, ubah kuota sesuai kondisi fisik rak, atau tolak dengan alasan tercatat.
+                        Setujui 1-klik, ubah kuota sesuai kondisi fisik rak, atau tolak dengan alasan tercatat.
                       </p>
                     </div>
                   </div>
@@ -80,9 +80,9 @@ export const TelegramSimulator: FC = () => {
                       <Zap className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-[var(--text)]">langsung terbit ke SAP S/4HANA</h4>
+                      <h4 className="text-[14px] font-bold text-[var(--text)]">Langsung Terbit ke SAP S/4HANA</h4>
                       <p className="text-[13px] text-[var(--text-muted)] mt-0.5 leading-[1.6]">
-                        otomatis trigger Purchase Requisition (BAPI/OData). tanpa human error entri ulang.
+                        Otomatis memicu Purchase Requisition (BAPI/OData) resmi tanpa risiko salah ketik ulang.
                       </p>
                     </div>
                   </div>

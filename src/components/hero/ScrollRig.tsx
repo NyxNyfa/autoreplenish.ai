@@ -14,16 +14,10 @@ export const ScrollRig: FC<ScrollRigProps> = ({ children }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isInView, setIsInView] = useState(true);
 
-  const isReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isScrollDriven = CINEMATIC_CONFIG.scrollDriven;
 
-  const isScrollDriven = CINEMATIC_CONFIG.scrollDriven && !isReducedMotion;
-
-  // Passive scroll listener + rAF
+  // Passive scroll listener + rAF (tracks both scrollDriven track or 100vh hero parallax)
   useEffect(() => {
-    if (!isScrollDriven) return;
-
     let ticking = false;
 
     const handleScroll = () => {
@@ -36,16 +30,14 @@ export const ScrollRig: FC<ScrollRigProps> = ({ children }) => {
           }
 
           const rect = el.getBoundingClientRect();
-          const totalScrollable = el.offsetHeight - window.innerHeight;
+          const totalScrollable = Math.max(
+            el.offsetHeight - window.innerHeight,
+            window.innerHeight * 0.85
+          );
 
-          if (totalScrollable <= 0) {
-            setScrollProgress(0);
-          } else {
-            // How far down the top of container has scrolled past viewport top
-            const currentScroll = -rect.top;
-            const progress = Math.max(0.0, Math.min(1.0, currentScroll / totalScrollable));
-            setScrollProgress(progress);
-          }
+          const currentScroll = -rect.top;
+          const progress = Math.max(0.0, Math.min(1.0, currentScroll / totalScrollable));
+          setScrollProgress(progress);
 
           ticking = false;
         });
@@ -59,9 +51,9 @@ export const ScrollRig: FC<ScrollRigProps> = ({ children }) => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isScrollDriven]);
+  }, []);
 
-  // IntersectionObserver for off-screen auto-pause in fallback mode
+  // IntersectionObserver for off-screen auto-pause to save GPU when scrolled far down
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -70,25 +62,24 @@ export const ScrollRig: FC<ScrollRigProps> = ({ children }) => {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  // In scroll mode: 420vh track; in fallback/reduced-motion: 100vh
-  const trackHeight = isScrollDriven ? "420vh" : "100vh";
+  const trackHeight = isScrollDriven ? "420vh" : "100dvh";
 
   return (
     <div
       ref={containerRef}
       id="hero-scroll-rig"
       className="relative w-full"
-      style={{ height: trackHeight }}
+      style={{ height: trackHeight, minHeight: "640px" }}
     >
-      {/* Sticky viewport container (100dvh on mobile, h-screen on desktop) */}
-      <div className="sticky top-0 w-full h-screen h-[100dvh] overflow-hidden select-none bg-[#161615] border-b border-[#3D3C39]">
+      {/* Sticky viewport container */}
+      <div className="sticky top-0 w-full h-screen h-[100dvh] min-h-[640px] overflow-hidden select-none bg-[#2C2A27]">
         {children({
           scrollProgress,
           isScrollDriven,

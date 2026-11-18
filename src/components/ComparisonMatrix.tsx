@@ -70,7 +70,7 @@ export const ComparisonMatrix: FC = () => {
   );
 
   return (
-    <section className="py-20 border-b border-[var(--border)] bg-[var(--bg)]">
+    <section className="py-20 bg-gradient-to-b from-[#1B1A19] via-[#1A1918] to-[#181817]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <Scroll3DCard rotateDeg={8} scaleFrom={0.95}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-12 space-y-8">
@@ -79,32 +79,34 @@ export const ComparisonMatrix: FC = () => {
               <div className="max-w-[640px]">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[12px] text-[var(--text-muted)] mb-3">
                   <Scale className="h-3.5 w-3.5 text-[var(--accent)]" />
-                  <span>evaluasi komparasi teknis</span>
+                  <span>EVALUASI KOMPARASI TEKNIS</span>
                 </div>
-                <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-                  cara manual vs software klasik vs autoreplenish.ai
+                <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+                  Cara Manual vs Software Klasik vs{" "}
+                  <span className="text-[var(--accent)]">AutoReplenish.ai</span>
                 </h2>
                 <p className="mt-2 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-                  bukan sekadar perbedaan teknologi, melainkan siapa yang mengerjakan proses repetitif dan seberapa cepat keputusan diambil.
+                  Bukan sekadar perbedaan teknologi, melainkan siapa yang mengerjakan proses repetitif dan seberapa akurat keputusan kuota diambil setiap hari.
                 </p>
               </div>
 
               {/* Filter segmented buttons */}
-              <div className="inline-flex p-1 rounded-[var(--radius-md)] bg-[var(--bg)] border border-[var(--border)] self-start md:self-auto">
+              <div className="inline-flex flex-wrap p-1 rounded-[var(--radius-md)] bg-[var(--bg)] border border-[var(--border)] self-start md:self-auto">
                 {(
                   [
-                    { id: "semua", label: "semua aspek" },
-                    { id: "kecepatan", label: "kecepatan toko" },
-                    { id: "akurasi", label: "akurasi reasoning" },
-                    { id: "efisiensi", label: "efisiensi sap" },
+                    { id: "semua", label: "Semua Aspek" },
+                    { id: "kecepatan", label: "Kecepatan Toko" },
+                    { id: "akurasi", label: "Akurasi Reasoning" },
+                    { id: "efisiensi", label: "Efisiensi SAP" },
                   ] as const
                 ).map((tab) => (
                   <button
                     key={tab.id}
+                    type="button"
                     onClick={() => setFilter(tab.id)}
-                    className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-medium transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-colors cursor-pointer ${
                       filter === tab.id
-                        ? "bg-[var(--surface-active)] text-[var(--text)]"
+                        ? "bg-[var(--accent)] text-[#161615]"
                         : "text-[var(--text-muted)] hover:text-[var(--text)]"
                     }`}
                   >

@@ -44,27 +44,46 @@ export function evaluateTimeline(rawTime: number): TimelineState {
   const storeRefills: Record<string, number> = {};
 
   CINEMATIC_CONFIG.trucks.forEach((truck) => {
-    // Trucks strictly depart starting at L3 (9.0s + stagger delay)
-    const dispatchTime = 9.0 + truck.delay;
+    // Trucks depart starting at L3 (8.0s + stagger delay)
+    const dispatchTime = 8.0 + truck.delay;
+    const arriveStoreTime = dispatchTime + truck.travelDuration;
+    const departStoreTime = arriveStoreTime + truck.dwellDuration;
+    const returnDcTime = departStoreTime + truck.returnDuration;
 
     if (t < dispatchTime) {
       truckProgress[truck.id] = 0.0;
       storeArrivals[truck.targetStoreId] = false;
       storeRefills[truck.targetStoreId] = 0.0;
+    } else if (t < arriveStoreTime) {
+      // Outbound from DC dock to store loading bay (0.0 -> 1.0)
+      const outboundElapsed = t - dispatchTime;
+      truckProgress[truck.id] = Math.min(
+        0.999,
+        Math.max(0.0, outboundElapsed / truck.travelDuration)
+      );
+      storeArrivals[truck.targetStoreId] = false;
+      storeRefills[truck.targetStoreId] = 0.0;
+    } else if (t < departStoreTime) {
+      // Docked at store unloading cargo (progress = 1.0)
+      truckProgress[truck.id] = 1.0;
+      storeArrivals[truck.targetStoreId] = true;
+      const timeSinceArrival = Math.max(0.0, t - arriveStoreTime);
+      storeRefills[truck.targetStoreId] = Math.min(1.0, timeSinceArrival / 1.0);
+    } else if (t < returnDcTime) {
+      // Returning from store back to DC dock (1.0 -> 2.0)
+      const returnElapsed = t - departStoreTime;
+      const returnFrac = Math.min(
+        1.0,
+        Math.max(0.0, returnElapsed / truck.returnDuration)
+      );
+      truckProgress[truck.id] = 1.0 + returnFrac;
+      storeArrivals[truck.targetStoreId] = true;
+      storeRefills[truck.targetStoreId] = 1.0;
     } else {
-      const elapsed = t - dispatchTime;
-      const progress = Math.min(1.0, Math.max(0.0, elapsed / truck.travelDuration));
-      truckProgress[truck.id] = progress;
-      const arrived = progress >= 0.999;
-      storeArrivals[truck.targetStoreId] = arrived;
-
-      if (arrived) {
-        // Stock fills over 1.0 second after arrival
-        const timeSinceArrival = Math.max(0.0, elapsed - truck.travelDuration);
-        storeRefills[truck.targetStoreId] = Math.min(1.0, timeSinceArrival / 1.0);
-      } else {
-        storeRefills[truck.targetStoreId] = 0.0;
-      }
+      // Returned and parked squarely back at DC dock (2.0 -> seamless with 0.0)
+      truckProgress[truck.id] = 2.0;
+      storeArrivals[truck.targetStoreId] = true;
+      storeRefills[truck.targetStoreId] = 1.0;
     }
   });
 
@@ -112,18 +131,12 @@ export function useTimeline(options: UseTimelineOptions = {}) {
     autoPlay = true,
   } = options;
 
-  const isReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Damped current time
-  const [dampedTime, setDampedTime] = useState<number>(() => {
-    if (isReducedMotion) return CINEMATIC_CONFIG.scrollSettings.reducedMotionTime;
-    return 0.0;
-  });
+  // Damped current time (start at 1.8s so Telegram card immediately animates in on load)
+  const [dampedTime, setDampedTime] = useState<number>(1.8);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const dampedTimeRef = useRef(dampedTime);
-  const targetTimeRef = useRef(0.0);
+  const targetTimeRef = useRef(1.8);
   const animFrameRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
 
@@ -134,19 +147,16 @@ export function useTimeline(options: UseTimelineOptions = {}) {
 
   // Update target time when scrollProgress changes (Scroll-driven mode)
   useEffect(() => {
-    if (isReducedMotion) return;
     if (isScrollDriven) {
       targetTimeRef.current = Math.max(
         0.0,
         Math.min(CINEMATIC_CONFIG.totalDuration, scrollProgress * CINEMATIC_CONFIG.totalDuration)
       );
     }
-  }, [scrollProgress, isScrollDriven, isReducedMotion]);
+  }, [scrollProgress, isScrollDriven]);
 
-  // Main animation / damping loop
+  // Main animation / damping loop (runs continuously regardless of OS reduced-motion setting)
   useEffect(() => {
-    if (isReducedMotion) return;
-
     const lerp = CINEMATIC_CONFIG.scrollSettings.lerpFactor;
 
     const tick = (timestamp: number) => {
@@ -157,7 +167,6 @@ export function useTimeline(options: UseTimelineOptions = {}) {
       lastTimeRef.current = timestamp;
 
       if (isScrollDriven) {
-        // Damping: smooth interpolation towards targetTimeRef
         const diff = targetTimeRef.current - dampedTimeRef.current;
         if (Math.abs(diff) > 0.0005) {
           const next = dampedTimeRef.current + diff * lerp;
@@ -167,13 +176,13 @@ export function useTimeline(options: UseTimelineOptions = {}) {
           dampedTimeRef.current = targetTimeRef.current;
           setDampedTime(targetTimeRef.current);
         }
-      } else if (autoPlay) {
-        // Auto-loop mode fallback
+      } else if (autoPlay && !isPaused) {
         let next = dampedTimeRef.current + dt;
         if (next >= CINEMATIC_CONFIG.totalDuration) {
           next = next % CINEMATIC_CONFIG.totalDuration;
         }
         dampedTimeRef.current = next;
+        targetTimeRef.current = next;
         setDampedTime(next);
       }
 
@@ -186,17 +195,23 @@ export function useTimeline(options: UseTimelineOptions = {}) {
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
       }
+      lastTimeRef.current = null;
     };
-  }, [isScrollDriven, autoPlay, isReducedMotion]);
+  }, [isScrollDriven, autoPlay, isPaused]);
 
-  // Jump to phase directly (for phase dots clicking)
+  // Jump to phase directly (for phase dots & interactive triggers)
   const jumpToPhase = useCallback((phaseIdx: number) => {
     const p = CINEMATIC_CONFIG.phases[phaseIdx];
     if (p) {
-      targetTimeRef.current = p.start;
-      dampedTimeRef.current = p.start;
-      setDampedTime(p.start);
+      const target = p.start + 0.05;
+      targetTimeRef.current = target;
+      dampedTimeRef.current = target;
+      setDampedTime(target);
     }
+  }, []);
+
+  const togglePause = useCallback(() => {
+    setIsPaused((prev) => !prev);
   }, []);
 
   // Evaluate pure timeline at current damped time
@@ -205,6 +220,8 @@ export function useTimeline(options: UseTimelineOptions = {}) {
   return {
     ...timeline,
     jumpToPhase,
+    isPaused,
+    togglePause,
     isScrollDriven,
   };
 }

@@ -3,8 +3,6 @@ import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { CaraKerja } from "@/components/sections/CaraKerja";
 import { BentoFeatures } from "@/components/BentoFeatures";
-import { LiveSimulator } from "@/components/LiveSimulator";
-import { TelegramSimulator } from "@/components/TelegramSimulator";
 import { WorkflowSection } from "@/components/WorkflowSection";
 import { ComparisonMatrix } from "@/components/ComparisonMatrix";
 import { RoiMetrics } from "@/components/RoiMetrics";
@@ -25,19 +23,17 @@ export const App: FC = () => {
       <Navbar onOpenDemo={handleOpenDemo} />
 
       <main>
-        {/* 2. Full-Bleed 3D Scroll-Driven Hero Cinematic Background + Monospace DOM Overlay */}
+        {/* 2. Full-Bleed 3D Hero Cinematic Background + Monospace DOM Overlay */}
         <HeroSection
           onOpenDemo={handleOpenDemo}
           onNavigateDemo={handleOpenDemo}
         />
 
-        {/* 3. 5-Step Pipeline Steps Section (Target of "Lihat Cara Kerja" anchor) */}
-        <CaraKerja />
+        {/* 3. Executive Metrics & 5-Step Pipeline Section */}
+        <CaraKerja onOpenDemo={handleOpenDemo} />
 
         {/* 4. Core Feature & Architecture Sections */}
         <BentoFeatures />
-        <LiveSimulator />
-        <TelegramSimulator />
         <WorkflowSection />
         <ComparisonMatrix />
         <RoiMetrics onOpenDemo={handleOpenDemo} />

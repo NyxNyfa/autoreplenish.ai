@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import { ScrollRig } from "./ScrollRig";
 import { useTimeline } from "./useTimeline";
 import { CinematicBackground } from "./CinematicBackground";
@@ -43,6 +43,8 @@ const HeroInner: FC<HeroInnerProps> = ({
   onOpenDemo,
   onNavigateDemo,
 }) => {
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+
   const timeline = useTimeline({
     scrollProgress,
     isScrollDriven,
@@ -56,45 +58,54 @@ const HeroInner: FC<HeroInnerProps> = ({
     }
   };
 
+  const handleSelectStore = (siteId: string | null) => {
+    if (siteId === "DC-01") {
+      timeline.jumpToPhase(3);
+      return;
+    }
+    setSelectedStoreId((prev) => (prev === siteId ? null : siteId));
+  };
+
   return (
     <div id="hero" className="relative w-full h-full overflow-hidden select-none">
-      {/* 1. Full-Bleed 3D Background Canvas (z-0, pointer-events-none) */}
+      {/* 1. Full-Bleed 3D Background Canvas (z-0, interactive) */}
       <CinematicBackground
         phaseIndex={timeline.phaseIndex}
         phaseProgress={timeline.phaseProgress}
+        scrollProgress={scrollProgress}
         isPlaying={isScrollDriven ? true : isInView}
         truckProgress={timeline.truckProgress}
         storeArrivals={timeline.storeArrivals}
         storeRefills={timeline.storeRefills}
+        selectedStoreId={selectedStoreId}
+        onSelectStore={handleSelectStore}
+        onTriggerApprove={() => timeline.jumpToPhase(2)}
       />
 
-      {/* 2. Monospace DOM Content & Controls Overlay (z-10) */}
+      {/* 2. Smooth Bottom Hand-off into #2A2825 (Top of CaraKerja) so Hero stays bright */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-36 z-[5] bg-gradient-to-t from-[#2A2825] via-[#2A2825]/60 to-transparent"
+      />
+
+      {/* 3. Monospace DOM Content & Controls Overlay (z-10) */}
       <HeroOverlay
         phaseIndex={timeline.phaseIndex}
         totalProgress={timeline.totalProgress}
         scrollProgress={scrollProgress}
         isScrollDriven={isScrollDriven}
+        isPaused={timeline.isPaused}
+        onTogglePause={timeline.togglePause}
         activeCaption={timeline.activeCaption}
         storeArrivals={timeline.storeArrivals}
         storeRefills={timeline.storeRefills}
+        selectedStoreId={selectedStoreId}
+        onSelectStore={handleSelectStore}
         onJumpToPhase={timeline.jumpToPhase}
         onOpenDemo={onOpenDemo}
         onNavigateDemo={onNavigateDemo}
         onScrollToFeatures={handleScrollToCaraKerja}
       />
-
-      {/* 3. Soft reset fade-to-bg overlay (0.6s) during L5 (auto-play mode only) */}
-      {!isScrollDriven &&
-        timeline.phaseIndex === 5 &&
-        timeline.phaseProgress >= 0.5 &&
-        timeline.phaseProgress < 0.75 && (
-          <div
-            className="absolute inset-0 bg-[#161615] pointer-events-none transition-opacity duration-200 z-20"
-            style={{
-              opacity: Math.sin(Math.min(1.0, (timeline.phaseProgress - 0.5) / 0.25) * Math.PI) * 0.9,
-            }}
-          />
-        )}
     </div>
   );
 };

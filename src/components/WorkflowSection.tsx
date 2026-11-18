@@ -164,7 +164,7 @@ export const WorkflowSection: FC = () => {
   const StepIcon = current.icon;
 
   return (
-    <section id="alur-kerja" className="py-20 border-b border-[var(--border)] bg-[var(--bg)]">
+    <section id="alur-kerja" className="py-20 bg-gradient-to-b from-[#1F1E1C] via-[#1D1C1A] to-[#1B1A19]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <Scroll3DCard rotateDeg={8} scaleFrom={0.95}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-12 space-y-10">
@@ -172,13 +172,14 @@ export const WorkflowSection: FC = () => {
             <div className="max-w-[680px]">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[12px] text-[var(--text-muted)] mb-3">
                 <Layers className="h-3.5 w-3.5 text-[var(--accent)]" />
-                <span>alur eksekusi otonom terpandu</span>
+                <span>INSPEKTOR TELEMETRI EVENTBRIDGE & SAP</span>
               </div>
-              <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-                5 langkah, dari deteksi hingga Purchase Requisition
+              <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+                5 Langkah Eksekusi, dari Deteksi hingga{" "}
+                <span className="text-[var(--accent)]">Purchase Requisition</span>
               </h2>
               <p className="mt-2 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-                tidak ada black-box. setiap detik pergerakan data dari rak minimarket ke SAP tercatat dan dapat diaudit secara transparan.
+                Tidak ada proses tersembunyi. Setiap detik pergerakan data dari mesin kasir minimarket ke SAP S/4HANA tercatat dan dapat diaudit secara transparan.
               </p>
             </div>
 

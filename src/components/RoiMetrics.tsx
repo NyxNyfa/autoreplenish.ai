@@ -33,13 +33,13 @@ export const RoiMetrics: FC<{ onOpenDemo: () => void }> = ({ onOpenDemo }) => {
   }, [storeCount, dailySalesPerStore]);
 
   const presets = [
-    { label: "pilot cluster", stores: 25, sales: 18 },
-    { label: "regional ritel", stores: 100, sales: 22 },
-    { label: "nasional scale", stores: 350, sales: 28 },
+    { label: "Pilot Cluster (25)", stores: 25, sales: 18 },
+    { label: "Regional Ritel (100)", stores: 100, sales: 22 },
+    { label: "Skala Nasional (350)", stores: 350, sales: 28 },
   ];
 
   return (
-    <section id="roi" className="py-20 border-b border-[var(--border)] bg-[var(--bg)]">
+    <section id="roi" className="py-20 bg-gradient-to-b from-[#181817] via-[#171716] to-[#161615]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <Scroll3DCard rotateDeg={8} scaleFrom={0.95}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-12 space-y-10">
@@ -48,27 +48,28 @@ export const RoiMetrics: FC<{ onOpenDemo: () => void }> = ({ onOpenDemo }) => {
               <div className="max-w-[640px]">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[12px] text-[var(--text-muted)] mb-3">
                   <Calculator className="h-3.5 w-3.5 text-[var(--accent)]" />
-                  <span>simulasi dampak finansial</span>
+                  <span>SIMULASI DAMPAK FINANSIAL</span>
                 </div>
-                <h2 className="text-[20px] md:text-[24px] font-bold leading-[1.3] text-[var(--text)]">
-                  kalkulator estimasi nilai tambah bisnis
+                <h2 className="text-[22px] md:text-[28px] font-bold leading-[1.3] text-[var(--text)]">
+                  Kalkulator Estimasi Nilai Tambah Bisnis (ROI)
                 </h2>
                 <p className="mt-2 text-[14px] leading-[1.7] text-[var(--text-muted)]">
-                  sesuaikan jumlah gerai dan estimasi sales harian toko minimarketmu untuk melihat potensi pemulihan omzet dan efisiensi modal kerja.
+                  Sesuaikan jumlah gerai dan estimasi omzet harian toko minimarket Anda untuk melihat potensi pemulihan lost-sales dan penghematan produk kedaluwarsa.
                 </p>
               </div>
 
               {/* Preset buttons */}
-              <div className="flex items-center gap-2 self-start md:self-auto">
-                <span className="text-[12px] text-[var(--text-faint)]">preset:</span>
+              <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                <span className="text-[12px] text-[var(--text-faint)]">Skala:</span>
                 {presets.map((p) => (
                   <button
                     key={p.label}
+                    type="button"
                     onClick={() => {
                       setStoreCount(p.stores);
                       setDailySalesPerStore(p.sales);
                     }}
-                    className={`px-2.5 py-1 rounded-[var(--radius-sm)] border text-[11px] font-medium cursor-pointer transition-colors ${
+                    className={`px-3 py-1.5 rounded-[var(--radius-sm)] border text-[11px] font-bold cursor-pointer transition-colors ${
                       storeCount === p.stores && dailySalesPerStore === p.sales
                         ? "bg-[var(--accent)] text-[#161615] border-[var(--accent)]"
                         : "bg-[var(--bg)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)]"

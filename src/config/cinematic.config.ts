@@ -26,25 +26,27 @@ export interface TruckDispatchConfig {
   targetStoreId: string;
   storeName: string;
   label: string;
-  delay: number; // Stagger delay in seconds relative to L3 start (9.0s)
+  delay: number; // Stagger delay in seconds relative to L3 start (8.0s)
   travelDuration: number;
+  dwellDuration: number; // Unloading time at store before returning to DC
+  returnDuration: number; // Return trip duration from store back to DC dock
   variant: "A" | "B";
 }
 
 export const CINEMATIC_CONFIG = {
-  // Primary mode: Scroll-driven scrubbing with sticky 420vh container
-  // Set to false for pure auto-loop fallback with zero play/pause buttons
-  scrollDriven: true,
+  // Primary mode: Continuous background animation loop (device-independent)
+  // Can still be scrubbed interactively via phase controls or scroll hybrid
+  scrollDriven: false,
 
-  // Total timeline duration: 20 seconds loop / pure function basis
-  totalDuration: 20.0,
+  // Total timeline duration: 22 seconds round-trip loop / pure function basis
+  totalDuration: 22.0,
   loop: true,
 
   // Section height and damping settings
   scrollSettings: {
-    sectionHeightVh: 420, // 420vh sticky track
+    sectionHeightVh: 100, // 100vh viewport container so layout never shifts across devices
     lerpFactor: 0.08, // Smooth cinematic damping factor (~0.08)
-    reducedMotionTime: 12.0, // Static frame at t=12s for reduced-motion
+    reducedMotionTime: 12.0, // Static frame reference
   },
 
   // Static Camera Configuration (Projecting map center LEFT of screen center)
@@ -64,55 +66,55 @@ export const CINEMATIC_CONFIG = {
       id: "L0_IDLE",
       name: "Idle Standby",
       scrollStart: 0.0,
-      scrollEnd: 0.08,
+      scrollEnd: 0.07,
       start: 0.0,
-      duration: 1.6,
+      duration: 1.5,
       caption: "🤖 AI memantau inventori seluruh cabang secara real-time",
     },
     {
       id: "L1_MESSAGE",
       name: "Telegram Anomali Alert",
-      scrollStart: 0.08,
-      scrollEnd: 0.32,
-      start: 1.6,
-      duration: 4.8,
+      scrollStart: 0.07,
+      scrollEnd: 0.25,
+      start: 1.5,
+      duration: 4.0,
       caption: "📲 Notifikasi risiko stockout dikirim ke Telegram Kepala Toko",
     },
     {
       id: "L2_APPROVE",
       name: "1-Click Approval ke SAP",
-      scrollStart: 0.32,
-      scrollEnd: 0.45,
-      start: 6.4,
-      duration: 2.6,
+      scrollStart: 0.25,
+      scrollEnd: 0.36,
+      start: 5.5,
+      duration: 2.5,
       caption: "🧾 PR otomatis terbentuk di SAP S/4HANA setelah approval 1-klik",
     },
     {
       id: "L3_DISPATCH",
       name: "Truk Berangkat dari DC",
-      scrollStart: 0.45,
+      scrollStart: 0.36,
       scrollEnd: 0.55,
-      start: 9.0,
-      duration: 2.0,
-      caption: "🚛 Armada logistik DC diberangkatkan menuju masing-masing toko",
+      start: 8.0,
+      duration: 4.2,
+      caption: "🚛 4 Armada logistik DC diberangkatkan menuju cabang minimarket",
     },
     {
       id: "L4_DELIVERY",
       name: "Pengiriman & Pengisian Stok",
       scrollStart: 0.55,
-      scrollEnd: 0.85,
-      start: 11.0,
-      duration: 6.0,
-      caption: "📦 Truk tiba di dock, stok fisik cabang terisi kembali 100%",
+      scrollEnd: 0.75,
+      start: 12.2,
+      duration: 4.3,
+      caption: "📦 Truk tiba di dock cabang, stok fisik terisi kembali 100%",
     },
     {
       id: "L5_HOLD_RESET",
-      name: "Hold & End Caption",
-      scrollStart: 0.85,
+      name: "Armada Kembali ke DC",
+      scrollStart: 0.75,
       scrollEnd: 1.0,
-      start: 17.0,
-      duration: 3.0,
-      caption: "✅ Stok aman, tanpa overstock & kedaluwarsa",
+      start: 16.5,
+      duration: 5.5,
+      caption: "✅ Pengiriman selesai, armada kembali ke DC Pusat Jakarta",
     },
   ] as const satisfies readonly CinematicPhaseConfig[],
 
@@ -154,24 +156,39 @@ export const CINEMATIC_CONFIG = {
     erpSyncStatus: "SAP S/4HANA: Status Confirmed",
   },
 
-  // Logistics Fleet Convoy Configuration
+  // Logistics Fleet Convoy Configuration (4 Stores -> Round-Trip back to 4 DC Docks)
   trucks: [
     {
       id: "TRK-2051",
       targetStoreId: "STR-001",
       storeName: "Cabang Sudirman",
       label: "TRK-2051 -> Cabang Sudirman",
-      delay: 0.0, // Departs at 9.0s
-      travelDuration: 5.8,
+      delay: 0.0, // Departs at 8.0s, arrives 11.8s, returns 14.6s -> 18.4s
+      travelDuration: 3.8,
+      dwellDuration: 2.8,
+      returnDuration: 3.8,
       variant: "A",
+    },
+    {
+      id: "TRK-2409",
+      targetStoreId: "STR-004",
+      storeName: "Cabang Stasiun",
+      label: "TRK-2409 -> Cabang Stasiun",
+      delay: 0.6, // Departs at 8.6s, arrives 12.6s, returns 15.2s -> 19.2s
+      travelDuration: 4.0,
+      dwellDuration: 2.6,
+      returnDuration: 4.0,
+      variant: "B",
     },
     {
       id: "TRK-2205",
       targetStoreId: "STR-002",
       storeName: "Cabang Kampus",
       label: "TRK-2205 -> Cabang Kampus",
-      delay: 2.5, // Departs at 11.5s (2.5s spacing)
-      travelDuration: 5.0,
+      delay: 1.2, // Departs at 9.2s, arrives 13.2s, returns 15.8s -> 19.8s
+      travelDuration: 4.0,
+      dwellDuration: 2.6,
+      returnDuration: 4.0,
       variant: "B",
     },
     {
@@ -179,11 +196,30 @@ export const CINEMATIC_CONFIG = {
       targetStoreId: "STR-003",
       storeName: "Cabang Perumahan",
       label: "TRK-2307 -> Cabang Perumahan",
-      delay: 4.8, // Departs at 13.8s (2.3s spacing)
+      delay: 1.8, // Departs at 9.8s, arrives 13.6s, returns 16.2s -> 20.0s
       travelDuration: 3.8,
+      dwellDuration: 2.6,
+      returnDuration: 3.8,
       variant: "A",
     },
   ] as const satisfies readonly TruckDispatchConfig[],
 } as const;
 
 export type CinematicConfigType = typeof CINEMATIC_CONFIG;
+
+export const REF_VIEWPORT_WIDTH = 1920;
+export const REF_VIEWPORT_HEIGHT = 980;
+export const BASE_ORTHO_ZOOM = 15.675;
+
+/**
+ * Computes device-independent orthographic zoom so the visible 3D world frustum
+ * (in meters) always matches the 1920x980 reference composition (HP Pavilion Gaming full view),
+ * regardless of screen resolution or Windows DPI scaling (100%, 125%, 150%).
+ */
+export function getResponsiveOrthoZoom(width: number, height: number): number {
+  const safeW = Math.max(width, 360);
+  const safeH = Math.max(height, 360);
+  const scaleX = safeW / REF_VIEWPORT_WIDTH;
+  const scaleY = safeH / REF_VIEWPORT_HEIGHT;
+  return BASE_ORTHO_ZOOM * Math.min(scaleX, scaleY);
+}

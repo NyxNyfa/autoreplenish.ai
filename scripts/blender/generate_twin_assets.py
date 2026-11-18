@@ -478,9 +478,9 @@ def build_dc_warehouse():
     add_box("DC_Roof", (0, 0, 7.9), (30.2, 14.2, 0.45), mat_roof, parent=root)
     add_box("DC_RoofCoping", (0, 0, 8.15), (30.4, 14.4, 0.15), mat_roof, parent=root)
 
-    # 5 Loading Dock Bays on front facade (Y = +6.8m)
-    # Positions: X = -10.0, -5.0, 0.0, +5.0, +10.0
-    dock_x_coords = (-10.0, -5.0, 0.0, 5.0, 10.0)
+    # 4 Loading Dock Bays on front facade (Y = +6.8m) matching the 4 fleet trucks
+    # Positions: X = -7.5, -2.5, +2.5, +7.5
+    dock_x_coords = (-7.5, -2.5, 2.5, 7.5)
     for i, dx in enumerate(dock_x_coords):
         # Blue projecting dock frame / shelter (3.2m wide, 3.6m tall)
         add_box(f"DC_DockFrame_{i+1}", (dx, 6.95, 2.3), (3.2, 0.45, 3.6), mat_dock_frame, parent=root)
